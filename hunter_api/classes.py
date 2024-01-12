@@ -12,10 +12,10 @@ classes.py:159:9: WPS221 Found line with high Jones Complexity: 15 > 14
 import time
 from abc import ABC, abstractmethod
 
-from requests import get
+import requests
 
 
-class Abstract(ABC):
+class Interface(ABC):
     """Abstract base class for creating, reading, updating, and deleting data."""
 
     # Constants for HTTP status codes
@@ -52,7 +52,7 @@ class Abstract(ABC):
         raise NotImplementedError("Method 'delete' must be implemented in subclass.")
 
 
-class EmailVerifier(Abstract):
+class EmailVerifier(Interface):
     """Class for verifying email addresses using the Hunter API."""
 
     __slots__ = ('url', 'api_key', 'json_data')
@@ -66,13 +66,13 @@ class EmailVerifier(Abstract):
     def create(self, email):
         """Verify the provided email address."""
         while True:
-            response = get(self.url.format(email), timeout=5)
+            response = requests.get(self.url.format(email), timeout=5)
             if response.status_code == self.api_call_again:
                 return False
             break
         if response.status_code == self.status_retry_later:
             time.sleep(5)
-            response = get(self.url.format(email), timeout=5)
+            response = requests.get(self.url.format(email), timeout=5)
             if response.status_code == self.status_retry_later:
                 return self.error222
         if response.status_code == self.status_bad_request:
@@ -100,7 +100,7 @@ class EmailVerifier(Abstract):
         self.json_data.pop(email, None)
 
 
-class DomainSearch(Abstract):
+class DomainSearch(Interface):
     """Class for domain search using the Hunter API."""
 
     __slots__ = ('url', 'api_key', 'json_data')
@@ -114,13 +114,13 @@ class DomainSearch(Abstract):
     def create(self, domain):
         """Search the provided domain."""
         while True:
-            response = get(self.url.format(domain), timeout=5)
+            response = requests.get(self.url.format(domain), timeout=5)
             if response.status_code == self.api_call_again:
                 return False
             break
         if response.status_code == self.status_retry_later:
             time.sleep(5)
-            response = get(self.url.format(domain), timeout=5)
+            response = requests.get(self.url.format(domain), timeout=5)
             if response.status_code == self.status_retry_later:
                 return self.error222
         if response.status_code == self.status_bad_request:
@@ -148,7 +148,7 @@ class DomainSearch(Abstract):
         self.json_data.pop(domain, None)
 
 
-class EmailFinder(Abstract):
+class EmailFinder(Interface):
     """Class for email search using the Hunter API."""
 
     __slots__ = ('url', 'api_key', 'json_data')
@@ -165,13 +165,13 @@ class EmailFinder(Abstract):
         parts = incoming_data.split('&')
         formed_url = self.url.format(parts[0], parts[1], parts[2])
         while True:
-            response = get(formed_url, timeout=5)
+            response = requests.get(formed_url, timeout=5)
             if response.status_code == self.api_call_again:
                 return False
             break
         if response.status_code == self.status_retry_later:
             time.sleep(5)
-            response = get(formed_url, timeout=5)
+            response = requests.get(formed_url, timeout=5)
             if response.status_code == self.status_retry_later:
                 return self.error222
         if response.status_code == self.status_bad_request:
@@ -199,7 +199,7 @@ class EmailFinder(Abstract):
         self.json_data.pop(incoming_data, None)
 
 
-class RunHunter(object):
+class HunterClient(object):
     """Interface to run EmailVerifier / DomainSearch / EmailFinder."""
 
     __slots__ = ('instance',)
