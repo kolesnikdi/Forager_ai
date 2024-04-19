@@ -1,9 +1,9 @@
 Description in English and Ukrainian
 # hunter_api
 Integration of some APIs of the https://api.hunter.io website is done as a pip installation package 
-## Встановлення пакета 
+## Installing the package  
 pip install hunter_api
-## Функціонал:
+## Features:
 - HunterClient('email_verifier', api_key) --> email verification.
 - HunterClient('email_finder', api_key) ---> search for an email.
 - HunterClient('domain_search', api_key) --> search for an domain.
@@ -12,7 +12,7 @@ pip install hunter_api
   - instance.read('enter_email') --> returning data in JSON
   - instance.update('enter_email', 'enter_email') --> replacing the data of one request with another.
   - instance.delete('enter_email') --> delete a request
-## Типізація коду за вимогами в файлі setup.cfg:
+## Typing code according to requirements in a file setup.cfg:
 - cd .\hunter_api\                       
 - flake8 classes.py
 - The requirements of P103, WPS305, WPS332, WPS221 were deliberately ignored as they lead to an unreasonable increase in code without its
